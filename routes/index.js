@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var GoogleSpreadsheet = require("google-spreadsheet");
 var _ = require('underscore');
+var moment = require('moment');
 
 var allTrackSlotsPage = 7;
 var trackSlotPage = 6;
@@ -17,12 +18,11 @@ var password = "hpuykaprnehswzwr";
 
 my_sheet.setAuth("wenli936@gmail.com", password, function() {});	
 
-
 /* GET pages. */
 router.get('/mentors/eng', function(req, res, next) {
 		// spreadsheet key is the long id in the sheets URL 
 		my_sheet.getRows(trackSlotPage, function(err, allSlots) {
-			getAllSlots(err, allSlots, engPage, res);
+			getAllSlots(err, allSlots, engPage, res, "eng");
 
 		});
 });
@@ -30,7 +30,7 @@ router.get('/mentors/eng', function(req, res, next) {
 router.get('/mentors/pd', function(req, res, next) {
 		// spreadsheet key is the long id in the sheets URL 
 		my_sheet.getRows(trackSlotPage, function(err, allSlots) {
-			getAllSlots(err, allSlots, pdPage, res);
+			getAllSlots(err, allSlots, pdPage, res, "pd");
 
 		});
 });
@@ -38,7 +38,7 @@ router.get('/mentors/pd', function(req, res, next) {
 router.get('/mentors/sales', function(req, res, next) {
 		// spreadsheet key is the long id in the sheets URL 
 		my_sheet.getRows(trackSlotPage, function(err, allSlots) {
-			getAllSlots(err, allSlots, salesPage, res);
+			getAllSlots(err, allSlots, salesPage, res, "sales");
 
 		});
 });
@@ -46,7 +46,7 @@ router.get('/mentors/sales', function(req, res, next) {
 router.get('/mentors/growth', function(req, res, next) {
 		// spreadsheet key is the long id in the sheets URL 
 		my_sheet.getRows(trackSlotPage, function(err, allSlots) {
-			getAllSlots(err, allSlots, growthPage, res);
+			getAllSlots(err, allSlots, growthPage, res, "growth");
 
 		});
 });
@@ -54,21 +54,21 @@ router.get('/mentors/growth', function(req, res, next) {
 router.get('/mentors/', function(req, res, next) {
 		// spreadsheet key is the long id in the sheets URL 
 		my_sheet.getRows(allTrackSlotsPage, function(err, allSlots) {
-			getAllSlots(err, allSlots, allTrackPage, res);
+			getAllSlots(err, allSlots, allTrackPage, res, "all");
 		});
 });
 
 //////////////////////////////////////////////////////////////
 
-var getAllSlots = function(err, allSlots, responsePage, res){
+function getAllSlots(err, allSlots, responsePage, res){
 		var trackTimeSlots = [];
 
 		//grab all the date/time slots from the original spreadsheet
 		for ( var i = 0; i < allSlots.length; i++){
 			var time = new Date(allSlots[i]['datetime']);
-			if (new Date() < time)
-				
-				trackTimeSlots.push(time.toString());
+			if (new Date() < time) {
+				trackTimeSlots.push(moment(time).format('llll'));
+			}
 		}
 
 		var options = {
@@ -80,7 +80,7 @@ var getAllSlots = function(err, allSlots, responsePage, res){
 		});
 }
 
-var getMentorSlotObject = function(trackTimeSlots, allMentors, res){
+function getMentorSlotObject(trackTimeSlots, allMentors, res){
 
 		//ordered list of mentors
 
@@ -89,6 +89,10 @@ var getMentorSlotObject = function(trackTimeSlots, allMentors, res){
 
 		for(var i = 0; i < allMentors.length; i++){
 			var mentorTime = new Date(allMentors[i]['datetime']);
+
+			//reformat date to be prettier
+			allMentors[i]['datetime'] = moment(mentorTime).format('llll');
+			
 			var slotIndex = trackTimeSlots.indexOf(mentorTime.toString());
 
 			//separate mentors by past and upcoming
