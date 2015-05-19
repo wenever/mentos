@@ -124,6 +124,7 @@ function getMentorSlotObject(trackTimeSlots, allMentors, res){
 			if (slotIndex > -1){
 			 	trackTimeSlots.splice(slotIndex, 1);
 			}
+
 		}
 
 		res.render('index', { title: 'Mentos' , upcoming: upcoming, slots: trackTimeSlots.reverse(), past: pastMentors.reverse()});

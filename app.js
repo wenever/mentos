@@ -33,9 +33,15 @@ passport.use(new GoogleStrategy({
     function(accessToken, refreshToken, profile, done) {
       // console.log(profile)
       console.log("GoogleStrategy done callback")
+      console.log(profile);
+      if(profile._json.domain === "tradecrafted.com"){
         process.nextTick(function () {
-            return done(null, profile);
+          return done(null, profile);
         });
+      }else{
+        console.log("non-tc email")
+        return done(null, false, { message: 'Incorrect password.' });
+      }
     }
 ));
 
@@ -68,11 +74,7 @@ app.use('/auth/google', passport.authenticate('google',
 app.use('/oauth2callback',
   passport.authenticate('google', { failureRedirect: '/login_fail'}),
   function(req, res) {
-    if (req.user['_json'].domain == "tradecrafted.com")
-      res.redirect('/mentors');
-    else {
-      res.redirect('/login_fail');
-    }
+    res.redirect('/mentors');
   }
 );
 
