@@ -1,28 +1,159 @@
-<h1>{{title}}</h1>
-<p>Welcome to {{title}}</p>
+    <!-- Wrap all page content here -->
+    <div id="wrap">
+      <!-- Fixed navbar -->
+      <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/mentors">Tradecraft</a>
+          </div>
+          <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#about">How do I use this?</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+      
+    <div class="container">
+      <div class="blockquote">
+        <blockquote>
+        <h2>{{title}}</h2>
+        <p>View and book available mentor slots, check out upcoming and past mentors, be awesome.</p><br />
+        </blockquote>
+      </div><br />
 
-<p>
-<h2>Upcoming</h2>
-{{#each upcoming}}
-	Slot: {{datetime}} <br/>
-	Mentor : {{engmentorname}} <br/>
-	Topic: {{topic}} <br/>
-	Owner : {{student}} <br/>
-	<br/>
-{{/each}}
+      <ul class="nav nav-tabs">
+          <li id="allTrackTab" role="presentation"><a href="/mentors">All-track</a></li>
+          <li id="engTab" role="presentation"><a href="/mentors/eng">Engineering</a></li>
+          <li id="pdTab" role="presentation"><a href="/mentors/pd">UX/Product Design</a></li>
+          <li id="growthTab" role="presentation"><a href="/mentors/growth">Growth</a></li>
+          <li id="salesTab" role="presentation"><a href="/mentors/sales">Sales/BD</a></li>
+      </ul><br />
 
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h4>All-track: Open Mentor Slots <small>Pick a slot, click Book Now, fill out the form and then click Send Invite</small></h4> 
+        </div>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Day/Time</th>
+              <th>Book this slot</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each slots}}
+            <tr>
+                <td>
+                  {{this}}
+                </td>
+              <td><a id="formLink" class="btn btn-primary btn-xs" role="button" target="_blank">Book now</a></td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div><br />
 
-<h2>Slots</h2>
+      <div class="panel panel-success">
+        <div class="panel-heading">
+          <h4>Upcoming Mentors <small>View and book available mentor slots</small></h4> 
+        </div>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Name</th>
+              <th>Title</th>
+              <th>Company</th>
+              <th>Owner</th>
+              <th>Export to gCal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each upcoming}}
+            <tr>
+              <th>{{datetime}}</th>
+              <a href="{{link}}"> <td>{{engmentorname}}</td></a>
+              <td>blah</td>
+              <td>blah</td>
+              <td>{{student}}</td>
+              <td><a href="#" class="btn btn-danger btn-xs" role="button">Create Event</a></td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div><br />
 
-{{#each slots}}
-	{{this}} <br>
-{{/each}}
-	
-<h2>Past Mentors</h2>
-{{#each past}}
-	Slot: {{datetime}} <br/>
-	Mentor : {{engmentorname}} <br/>
-	Topic: {{topic}} <br/>
-	Owner : {{student}} <br/>
-	<br/>
-{{/each}}
+      <div class="panel panel-warning">
+        <div class="panel-heading">
+          <h4>Past Mentors <small>Previous mentors, info and links to audio</small></h4>
+        </div>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Name</th>
+              <th>Title</th>
+              <th>Company</th>
+              <th>Owner</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each past}}
+            <tr>
+              <th>{{datetime}}</th>
+              <td>{{engmentorname}}</td>
+              <td>blah</td>
+              <td>blah</td>
+              <td>{{student}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div><br />
+
+    <hr>
+
+    <div id="footer">
+      <div class="container">
+        <center><p class="text-muted credit">Made with &hearts; from TC Eng (you know, upstairs...in the cloud)</p></center>
+      </div>
+    </div>
+
+  <!-- script references -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        var trackTab = location["pathname"].replace("/mentors/", "");
+
+        switch (trackTab) {
+          case "eng": 
+            $("#engTab").addClass("active")
+            $("#formLink").attr("href", "http://goo.gl/forms/qmgKtfImJH")
+            break;
+          case "pd": 
+            $("#pdTab").addClass("active")
+            $("#formLink").attr("href", "http://goo.gl/forms/CBdQifPVMp")
+            break;
+          case "sales": 
+            $("#salesTab").addClass("active")
+            $("#formLink").attr("href", "http://goo.gl/forms/eZhpXe5Sur")
+            break;
+          case "growth": 
+            $("#growthTab").addClass("active")
+            $("#formLink").attr("href", "http://goo.gl/forms/f3ew0ZDQ9V")
+            break;
+          default: 
+            $("#allTrackTab").addClass("active")
+            $("#formLink").attr("href", "http://goo.gl/forms/3cxmi9HAa2")
+        }
+      })
+    </script>

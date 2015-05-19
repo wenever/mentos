@@ -1,1 +1,2 @@
-web: bin/www
+web: nodemon ./bin/www
+

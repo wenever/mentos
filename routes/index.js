@@ -13,13 +13,12 @@ var pdPage = 2;
 var allTrackPage = 1;
 
 //the google sheet we're using
-var my_sheet = new GoogleSpreadsheet('1ik7jX0x0e1IuDzKT9YVKIVlLIVen7QtIHp11QakJmA8');
-var password = "hpuykaprnehswzwr";
+var my_sheet = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID);
 
-my_sheet.setAuth("wenli936@gmail.com", password, function() {});	
+my_sheet.setAuth(process.env.EMAIL, process.env.GOOGLE_PASSWORD, function() {});	
 
 /* GET pages. */
-router.get('/mentors/eng', function(req, res, next) {
+router.get('/mentors/eng', ensureAuthenticated, function(req, res, next) {
 		// spreadsheet key is the long id in the sheets URL 
 		my_sheet.getRows(trackSlotPage, function(err, allSlots) {
 			getAllSlots(err, allSlots, engPage, res, "eng");
@@ -27,7 +26,7 @@ router.get('/mentors/eng', function(req, res, next) {
 		});
 });
 
-router.get('/mentors/pd', function(req, res, next) {
+router.get('/mentors/pd', ensureAuthenticated, function(req, res, next) {
 		// spreadsheet key is the long id in the sheets URL 
 		my_sheet.getRows(trackSlotPage, function(err, allSlots) {
 			getAllSlots(err, allSlots, pdPage, res, "pd");
@@ -35,7 +34,7 @@ router.get('/mentors/pd', function(req, res, next) {
 		});
 });
 
-router.get('/mentors/sales', function(req, res, next) {
+router.get('/mentors/sales', ensureAuthenticated, function(req, res, next) {
 		// spreadsheet key is the long id in the sheets URL 
 		my_sheet.getRows(trackSlotPage, function(err, allSlots) {
 			getAllSlots(err, allSlots, salesPage, res, "sales");
@@ -43,7 +42,7 @@ router.get('/mentors/sales', function(req, res, next) {
 		});
 });
 
-router.get('/mentors/growth', function(req, res, next) {
+router.get('/mentors/growth', ensureAuthenticated, function(req, res, next) {
 		// spreadsheet key is the long id in the sheets URL 
 		my_sheet.getRows(trackSlotPage, function(err, allSlots) {
 			getAllSlots(err, allSlots, growthPage, res, "growth");
@@ -51,12 +50,30 @@ router.get('/mentors/growth', function(req, res, next) {
 		});
 });
 
-router.get('/mentors/', function(req, res, next) {
+router.get('/mentors/', ensureAuthenticated, function(req, res, next) {
 		// spreadsheet key is the long id in the sheets URL 
 		my_sheet.getRows(allTrackSlotsPage, function(err, allSlots) {
 			getAllSlots(err, allSlots, allTrackPage, res, "all");
 		});
 });
+
+///////authentication routes////////////
+
+//login page
+router.get('/login', function(req, res, next) {
+  res.send('Welcome! <a href="/auth/google"> Login with Google </a>')
+});
+
+//login fail route
+router.get('/login_fail', function(req, res){
+  res.send('login failed!');
+});
+
+
+function ensureAuthenticated(req, res, next) {  
+    if (req.isAuthenticated()) { return next(); }
+    res.redirect('/auth/google');
+}
 
 //////////////////////////////////////////////////////////////
 
