@@ -68,7 +68,11 @@ app.use('/auth/google', passport.authenticate('google',
 app.use('/oauth2callback',
   passport.authenticate('google', { failureRedirect: '/login_fail'}),
   function(req, res) {
-    res.redirect('/mentors');
+    if (req.user['_json'].domain == "tradecrafted.com")
+      res.redirect('/mentors');
+    else {
+      res.redirect('/login_fail');
+    }
   }
 );
 

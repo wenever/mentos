@@ -66,7 +66,7 @@ router.get('/login', function(req, res, next) {
 
 //login fail route
 router.get('/login_fail', function(req, res){
-  res.send('login failed!');
+  res.send('login failed! please log in using your tradecrafted email');
 });
 
 
